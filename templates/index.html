@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Calculator - Web Interface</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-calculator"></i> Python Calculator</h1>
+            <p>A powerful web-based calculator with scientific functions</p>
+        </header>
+
+        <div class="calculator-container">
+            <!-- Calculator Display -->
+            <div class="calculator">
+                <div class="display-section">
+                    <div class="memory-display">
+                        <span id="memory-indicator">Memory: 0</span>
+                        <button id="toggle-mode" class="mode-toggle">
+                            <i class="fas fa-exchange-alt"></i>
+                            <span id="mode-text">Scientific</span>
+                        </button>
+                    </div>
+                    <div class="display">
+                        <div id="expression" class="expression"></div>
+                        <div id="result" class="result">0</div>
+                    </div>
+                </div>
+
+                <!-- Basic Calculator Buttons -->
+                <div class="buttons basic-mode">
+                    <div class="button-row">
+                        <button class="btn btn-secondary" onclick="clearAll()">C</button>
+                        <button class="btn btn-secondary" onclick="clearEntry()">CE</button>
+                        <button class="btn btn-secondary" onclick="backspace()">
+                            <i class="fas fa-backspace"></i>
+                        </button>
+                        <button class="btn btn-operator" onclick="appendOperator('/')">/</button>
+                    </div>
+                    <div class="button-row">
+                        <button class="btn btn-number" onclick="appendNumber('7')">7</button>
+                        <button class="btn btn-number" onclick="appendNumber('8')">8</button>
+                        <button class="btn btn-number" onclick="appendNumber('9')">9</button>
+                        <button class="btn btn-operator" onclick="appendOperator('*')">×</button>
+                    </div>
+                    <div class="button-row">
+                        <button class="btn btn-number" onclick="appendNumber('4')">4</button>
+                        <button class="btn btn-number" onclick="appendNumber('5')">5</button>
+                        <button class="btn btn-number" onclick="appendNumber('6')">6</button>
+                        <button class="btn btn-operator" onclick="appendOperator('-')">-</button>
+                    </div>
+                    <div class="button-row">
+                        <button class="btn btn-number" onclick="appendNumber('1')">1</button>
+                        <button class="btn btn-number" onclick="appendNumber('2')">2</button>
+                        <button class="btn btn-number" onclick="appendNumber('3')">3</button>
+                        <button class="btn btn-operator" onclick="appendOperator('+')">+</button>
+                    </div>
+                    <div class="button-row">
+                        <button class="btn btn-secondary" onclick="toggleSign()">±</button>
+                        <button class="btn btn-number" onclick="appendNumber('0')">0</button>
+                        <button class="btn btn-number" onclick="appendNumber('.')">.</button>
+                        <button class="btn btn-equals" onclick="calculate()">=</button>
+                    </div>
+                </div>
+
+                <!-- Scientific Calculator Buttons -->
+                <div class="buttons scientific-mode" style="display: none;">
+                    <div class="button-row">
+                        <button class="btn btn-secondary" onclick="clearAll()">C</button>
+                        <button class="btn btn-secondary" onclick="clearEntry()">CE</button>
+                        <button class="btn btn-secondary" onclick="backspace()">
+                            <i class="fas fa-backspace"></i>
+                        </button>
+                        <button class="btn btn-operator" onclick="appendOperator('/')">/</button>
+                        <button class="btn btn-function" onclick="appendFunction('sqrt')">√</button>
+                    </div>
+                    <div class="button-row">
+                        <button class="btn btn-number" onclick="appendNumber('7')">7</button>
+                        <button class="btn btn-number" onclick="appendNumber('8')">8</button>
+                        <button class="btn btn-number" onclick="appendNumber('9')">9</button>
+                        <button class="btn btn-operator" onclick="appendOperator('*')">×</button>
+                        <button class="btn btn-function" onclick="appendOperator('^')">x²</button>
+                    </div>
+                    <div class="button-row">
+                        <button class="btn btn-number" onclick="appendNumber('4')">4</button>
+                        <button class="btn btn-number" onclick="appendNumber('5')">5</button>
+                        <button class="btn btn-number" onclick="appendNumber('6')">6</button>
+                        <button class="btn btn-operator" onclick="appendOperator('-')">-</button>
+                        <button class="btn btn-function" onclick="appendFunction('sin')">sin</button>
+                    </div>
+                    <div class="button-row">
+                        <button class="btn btn-number" onclick="appendNumber('1')">1</button>
+                        <button class="btn btn-number" onclick="appendNumber('2')">2</button>
+                        <button class="btn btn-number" onclick="appendNumber('3')">3</button>
+                        <button class="btn btn-operator" onclick="appendOperator('+')">+</button>
+                        <button class="btn btn-function" onclick="appendFunction('cos')">cos</button>
+                    </div>
+                    <div class="button-row">
+                        <button class="btn btn-secondary" onclick="toggleSign()">±</button>
+                        <button class="btn btn-number" onclick="appendNumber('0')">0</button>
+                        <button class="btn btn-number" onclick="appendNumber('.')">.</button>
+                        <button class="btn btn-equals" onclick="calculate()">=</button>
+                        <button class="btn btn-function" onclick="appendFunction('tan')">tan</button>
+                    </div>
+                    <div class="button-row">
+                        <button class="btn btn-function" onclick="appendFunction('log')">log</button>
+                        <button class="btn btn-function" onclick="appendFunction('ln')">ln</button>
+                        <button class="btn btn-function" onclick="appendConstant('pi')">π</button>
+                        <button class="btn btn-function" onclick="appendConstant('e')">e</button>
+                        <button class="btn btn-function" onclick="appendFunction('factorial')">n!</button>
+                    </div>
+                </div>
+
+                <!-- Memory Buttons -->
+                <div class="memory-buttons">
+                    <button class="btn btn-memory" onclick="memoryClear()">MC</button>
+                    <button class="btn btn-memory" onclick="memoryRecall()">MR</button>
+                    <button class="btn btn-memory" onclick="memoryStore()">MS</button>
+                    <button class="btn btn-memory" onclick="memoryAdd()">M+</button>
+                </div>
+            </div>
+
+            <!-- History Panel -->
+            <div class="history-panel">
+                <div class="history-header">
+                    <h3><i class="fas fa-history"></i> History</h3>
+                    <button id="clear-history" onclick="clearHistory()">
+                        <i class="fas fa-trash"></i> Clear
+                    </button>
+                </div>
+                <div id="history-list" class="history-list">
+                    <p class="no-history">No calculations yet</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Expression Input -->
+        <div class="expression-input-section">
+            <h3><i class="fas fa-code"></i> Expression Evaluator</h3>
+            <div class="input-group">
+                <input type="text" id="expression-input" placeholder="Enter expression (e.g., sin(pi/2) + sqrt(16))">
+                <button onclick="evaluateExpression()" class="btn btn-primary">
+                    <i class="fas fa-play"></i> Evaluate
+                </button>
+            </div>
+            <p class="help-text">
+                Supported: +, -, *, /, ^, sin, cos, tan, sqrt, log, ln, pi, e, factorial
+            </p>
+        </div>
+
+        <!-- Error Toast -->
+        <div id="error-toast" class="toast error-toast">
+            <div class="toast-content">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="error-message"></span>
+            </div>
+        </div>
+
+        <!-- Success Toast -->
+        <div id="success-toast" class="toast success-toast">
+            <div class="toast-content">
+                <i class="fas fa-check-circle"></i>
+                <span id="success-message"></span>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Python Calculator - Built with Flask, HTML, CSS & JavaScript</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/calculator.js') }}"></script>
+</body>
+</html>
